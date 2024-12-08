@@ -16,28 +16,28 @@ The dataset has 150180 rows, corresponding to 12515 games, and has columns featu
 - `result`: This column represents the outcome of the game where 0 indicates that the team lost and 1 indicates that the team won.
 - `gamelength`: This column represents how long the game took to finish.
 - `complete`: This column represents the completeness of the game. If a game was played out completely, it has a value of 'complete', and if a game was stopped midway it is marked 'partial'.
-- `position`: This column represents the position of the player in the game. It also allows us to differentiate between rows that show player and team statistics.
-- `wardsplaced`: This column represents the number of wards placed.
-- `firsttower`: This column represents if the team was the first to get the first tower in the game.
-- `firstmidtower`: This column represents if the team was the first to get the mid tower.
+- `position`: This column represents the position of the player in the game. It also allows for differentiation between rows that show player vs team statistics.
+- `wardsplaced`: This column represents the number of wards placed by the player or team.
+- `firsttower`: This column represents if the team was the first to destroy the first tower in the game.
+- `firstmidtower`: This column represents if the team was the first to destroy the opponent's mid tower.
 - `turretplates`: This column represents the number of turret plates that the team was able to get.
 
 # Data Cleaning and Exploratory Data Analysis
 ## Data Cleaning
-For data cleaning, I first filtered to keep only the complete games. The games marked 'partial' wouldn't be helpful in determining the outcome of the game. Next, I filtered to only keep the rows showing the team statistics because I was only interested in the overall team's map control. I also only kept the relevant columns: `gameid`, `result`, `wardsplaced`, `gamelength`, `firsttower`, `firstmidtower`, `firsttothreetowers`, and `turretplates`. I also creataed another column called `wardsplacedpermin` based on the `wardsplaced` and `gamelength` columns.
+For data cleaning, I first filtered to keep only the complete games because the games marked 'partial' wouldn't be helpful in determining the outcome of the game. Next, I filtered to only keep the rows showing the team statistics because I was only interested in the overall team's map control. I also only kept the relevant columns: `gameid`, `result`, `wardsplaced`, `gamelength`, `firsttower`, `firstmidtower`, `firsttothreetowers`, and `turretplates`. I also created another column called `wardsplacedpermin` based on the `wardsplaced` and `gamelength` columns.
 
 Below is part of the head of our cleaned dataframe (only displaying some of the columns for the sake of space).
 
-| gameid                |   result |   wardsplaced |   gamelength |   firsttower |   firstmidtower |   turretplates |   wardsplacedpermin |
-|:----------------------|---------:|--------------:|-------------:|-------------:|----------------:|---------------:|--------------------:|
-| ESPORTSTMNT01_2690210 |        0 |            74 |         1713 |            1 |               1 |              5 |             2.59194 |
-| ESPORTSTMNT01_2690210 |        1 |            93 |         1713 |            0 |               0 |              0 |             3.25744 |
-| ESPORTSTMNT01_2690219 |        0 |           119 |         2114 |            0 |               0 |              2 |             3.37748 |
-| ESPORTSTMNT01_2690219 |        1 |           129 |         2114 |            1 |               1 |              3 |             3.66131 |
-| ESPORTSTMNT01_2690227 |        1 |           119 |         1972 |            1 |               1 |              1 |             3.62069 |
+| gameid                |   result |   wardsplaced |   gamelength |   firsttower |   turretplates |   wardsplacedpermin |
+|:----------------------|---------:|--------------:|-------------:|-------------:|---------------:|--------------------:|
+| ESPORTSTMNT01_2690210 |        0 |            74 |         1713 |            1 |              5 |             2.59194 |
+| ESPORTSTMNT01_2690210 |        1 |            93 |         1713 |            0 |              0 |             3.25744 |
+| ESPORTSTMNT01_2690219 |        0 |           119 |         2114 |            0 |              2 |             3.37748 |
+| ESPORTSTMNT01_2690219 |        1 |           129 |         2114 |            1 |              3 |             3.66131 |
+| ESPORTSTMNT01_2690227 |        1 |           119 |         1972 |            1 |              1 |             3.62069 |
 
 ## Univariate Analysis
-I performed univariate analysis on the wards placed per minute. 
+I performed univariate analysis on the wards placed per minute per team. 
 
 <iframe
   src="assets/univariate1.html"
@@ -46,7 +46,7 @@ I performed univariate analysis on the wards placed per minute.
   frameborder="0"
 ></iframe>
 
-The histogram shows that the distribution of wards placed per minute basically normal, with most teams placing around 3 wards per minute
+The histogram shows that the distribution of wards placed per minute is basically normal, with most teams placing around 3 wards per minute
 
 ## Bivariate Analysis
 I performed bivariate analysis on the wards placed per minute and result statistics in the dataset to visualize the difference in the wards placed per minute between winning teams and losing teams.
@@ -71,11 +71,11 @@ Here are some interesting aggregates:
 I first groupby the result of the game then calculate the sum of the statistics. The winning team had better statistics all around with more vision placed and better first tower statistics.
 
 ## Imputation
-The only imputation that had to be done was on the `firstmidtower` column in the one game where there was no mid tower broken by either team. Both rows were filled with 0s to indicate that neither team was the first to break the mid tower.
+The only imputation that had to be done was on the `firstmidtower` column in one game where there was no mid tower broken by either team. Both rows were filled with 0s to indicate that neither team was the first to break the mid tower.
 
 # Framing a Prediction Problem
 
-For the prediction problem, I will do a binary classification to predict the outcome of a League of Legends game (win or loss) based on a team's initial map control. I will only use statistics involving the first team to get certain towers and not vision-related scores because vision-related scores are only complete once the full game has been played out. Therefore, the vision-related statistics would not be known at the time of prediction. I am using accuracy to evaluate it because the instances of my response classes of 'win' and 'loss' are balanced in the dataset.
+For the prediction problem, I will do a binary classification to predict the outcome of a League of Legends game (win or loss) based on a team's initial map control. I will only use statistics involving the first team to get certain tower objectives. I will not use vision-related statistics because the vision-related statistics in this dataset are only complete once the full game has been played out. Therefore, the vision-related statistics would not be known at the time of prediction. I am using accuracy to evaluate the model because the instances of my response classes of 'win' and 'loss' are balanced in the dataset.
 
 # Baseline Model
 
@@ -88,4 +88,4 @@ In the final model, I added two more features of `turretplating`, an ordinal fea
 
 The final model used a Random Forest Classifier with tuning on the number of estimators, max depth, and the minimum samples split. For the hyperparameters, I used grid search to find that the best number of estimators is 200, the best max depth is 5, and the best number of min samples split is 5.
 
-The final result had an accuracy of 0.7790, am improvement over the baseline accuracy of 0.7385.
+The final result had an accuracy of 0.7790, an improvement over the baseline accuracy of 0.7385.
