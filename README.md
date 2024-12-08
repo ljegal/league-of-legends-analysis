@@ -26,15 +26,15 @@ The dataset has 150180 rows, corresponding to 12515 games, and has columns featu
 ## Data Cleaning
 For data cleaning, I first filtered to keep only the complete games. The games marked 'partial' wouldn't be helpful in determining the outcome of the game. Next, I filtered to only keep the rows showing the team statistics because I was only interested in the overall team's map control. I also only kept the relevant columns: `gameid`, `result`, `wardsplaced`, `gamelength`, `firsttower`, `firstmidtower`, `firsttothreetowers`, and `turretplates`. I also creataed another column called `wardsplacedpermin` based on the `wardsplaced` and `gamelength` columns.
 
-Below is the head of our cleaned dataframe.
+Below is part of the head of our cleaned dataframe (only displaying some of the columns for the sake of space).
 
-| gameid                |   result |   wardsplaced |   gamelength |   firsttower |   firstmidtower |   firsttothreetowers |   turretplates |   wardsplacedpermin | result_str   |
-|:----------------------|---------:|--------------:|-------------:|-------------:|----------------:|---------------------:|---------------:|--------------------:|:-------------|
-| ESPORTSTMNT01_2690210 |        0 |            74 |         1713 |            1 |               1 |                    1 |              5 |             2.59194 | loss         |
-| ESPORTSTMNT01_2690210 |        1 |            93 |         1713 |            0 |               0 |                    0 |              0 |             3.25744 | win          |
-| ESPORTSTMNT01_2690219 |        0 |           119 |         2114 |            0 |               0 |                    0 |              2 |             3.37748 | loss         |
-| ESPORTSTMNT01_2690219 |        1 |           129 |         2114 |            1 |               1 |                    1 |              3 |             3.66131 | win          |
-| ESPORTSTMNT01_2690227 |        1 |           119 |         1972 |            1 |               1 |                    1 |              1 |             3.62069 | win          |
+| gameid                |   result |   wardsplaced |   gamelength |   firsttower |   firstmidtower |   turretplates |   wardsplacedpermin |
+|:----------------------|---------:|--------------:|-------------:|-------------:|----------------:|---------------:|--------------------:|
+| ESPORTSTMNT01_2690210 |        0 |            74 |         1713 |            1 |               1 |              5 |             2.59194 |
+| ESPORTSTMNT01_2690210 |        1 |            93 |         1713 |            0 |               0 |              0 |             3.25744 |
+| ESPORTSTMNT01_2690219 |        0 |           119 |         2114 |            0 |               0 |              2 |             3.37748 |
+| ESPORTSTMNT01_2690219 |        1 |           129 |         2114 |            1 |               1 |              3 |             3.66131 |
+| ESPORTSTMNT01_2690227 |        1 |           119 |         1972 |            1 |               1 |              1 |             3.62069 |
 
 ## Univariate Analysis
 I performed univariate analysis on the wards placed per minute. 
@@ -63,10 +63,10 @@ According to the plot, teams who won had more wards placed per minute compared t
 ## Interesting Aggregates
 Here are some interesting aggregates: 
 
-| result_str   |   wardsplaced |   wardsplacedpermin |   firsttower |   firstmidtower |   firsttothreetowers |   turretplates |
+| result       |   wardsplaced |   wardsplacedpermin |   firsttower |   firstmidtower |   firsttothreetowers |   turretplates |
 |:-------------|--------------:|--------------------:|-------------:|----------------:|---------------------:|---------------:|
-| loss         |   1.00928e+06 |             31356.5 |         3361 |            2889 |                 2350 |          40671 |
-| win          |   1.04742e+06 |             32696.6 |         7261 |            7732 |                 8271 |          58584 |
+| loss         |       1009277 |             31356.5 |         3361 |            2889 |                 2350 |          40671 |
+| win          |       1047418 |             32696.6 |         7261 |            7732 |                 8271 |          58584 |
 
 I first groupby the result of the game then calculate the sum of the statistics. The winning team had better statistics all around with more vision placed and better first tower statistics.
 
